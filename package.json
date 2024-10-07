@@ -1,18 +1,13 @@
 {
-  "name": "ttfinfo",
+  "name": "ttf-info",
   "version": "0.2.0",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trevordixon/ttfinfo.git"
-  },
+  "type": "module",
+ 
   "keywords": [
     "ttf"
   ],
-  "author": {
-    "name": "Trevor Dixon",
-    "email": "trevordixon@gmail.com"
-  },
+
   "license": "MIT",
   "description": "Extracts metadata from a ttf file."
 }

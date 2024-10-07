@@ -1,37 +1,31 @@
-const fs            = require('fs'),
-      nameTable     = require('./tableName')
-      postTable     = require('./tablePost'),
-      os2Table      = require('./tableOS2');
+import fs from 'node:fs/promises';
+import nameTable from './table-name.js';
+import postTable from './table-post.js';
+import os2Table from './table-OS2.js';
 
 function ttfInfo(data) {
-  try {
-    var info = {
-      tables: {
-        name: nameTable(data),
-        post: postTable(data),
-        'OS/2': os2Table(data)
-      }
-    };
-
-    return info;
-  }
-  catch(e) {
-    console.error(String(e));
-    throw ("Error reading ttf: " + String(e));
-  }
+  return {
+    tables: {
+      name: nameTable(data),
+      post: postTable(data),
+      'OS/2': os2Table(data)
+    }
+  };
 }
 
-module.exports = function(pathOrData, cb) {
-	var getData = (pathOrData instanceof Buffer) ?
-		function(data, cb) { cb(null, data); } : fs.readFile;
+export default async (pathOrData) => {
+  if (!(pathOrData instanceof Buffer) && typeof pathOrData !== 'string') {
+    throw new Error('Invalid path or data provided.');
+  }
 
-	getData(pathOrData, function(err, data) {
-		if (err) return cb(pathOrData + ' not found.');
-		try {
-			var info = ttfInfo(data);
-			cb(null, info);
-		} catch(err) {
-			cb(err);
-		}
-	});
+  try {
+    const data = pathOrData instanceof Buffer ? pathOrData : await fs.readFile(pathOrData);
+    return ttfInfo(data);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      throw new Error(`${pathOrData} not found.`);
+    } else {
+      throw new Error(`Error reading ttf: ${err.message}`);
+    }
+  }
 };

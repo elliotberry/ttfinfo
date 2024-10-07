@@ -1,9 +1,9 @@
-const table = require('./table');
+import table from './table.js';
 
-const VERSION_OFFSET = 0,
-      WEIGHT_CLASS_OFFSET = 4;
+const VERSION_OFFSET = 0;
+const WEIGHT_CLASS_OFFSET = 4;
 
-module.exports = function(data) {
+export default function(data) {
   var o = table.offset(data, 'OS/2');
   return {
     version           : data.readUInt16BE(o+VERSION_OFFSET),
